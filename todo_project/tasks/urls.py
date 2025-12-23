@@ -1,8 +1,11 @@
 from django.urls import path
-from .views import task_list ,toggle_task,delete_task
+from . import views
 
 urlpatterns = [
-    path("", task_list, name="task_list"),
-    path("toggle/<int:task_id>/", toggle_task, name="toggle_task"),
-    path("delete/<int:task_id>/", delete_task, name="delete_task"),
+    path("", views.task_list, name="task_list"),
+    path("toggle/<int:pk>/", views.toggle_task, name="toggle_task"),
+    path("delete/<int:pk>/", views.delete_task, name="delete_task"),
+
+    path("signup/", views.signup, name="signup"),
+    
 ]

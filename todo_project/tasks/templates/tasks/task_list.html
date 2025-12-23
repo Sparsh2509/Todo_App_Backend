@@ -1,67 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>My To-Do App</title>
 
     <!-- Bootstrap CSS -->
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    >    
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
 </head>
+
 <body class="bg-light">
 
-    <div class="container mt-5">
-        <div class="card shadow p-4">
+<div class="container mt-5">
+    <div class="card shadow p-4">
 
-            <h2 class="mb-4 text-center">My To-Do App</h2>
+        <h2 class="mb-4 text-center">My To-Do App</h2>
 
-            <!-- ADD TASK FORM -->
-            <form method="POST" class="d-flex gap-2 mb-4">
-                {% csrf_token %}
-                <input type="text" name="title" class="form-control" placeholder="Enter task" required>
-                <button type="submit" class="btn btn-primary">
-                    Add
-                </button>
-            </form>
+        <!-- ADD TASK FORM -->
+        <form method="POST" class="mb-4">
+            {% csrf_token %}
 
-            <!-- TASK LIST -->
-            <ul class="list-group">
-                {% for task in tasks %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div class="mb-2">
+                {{ form.subject }}
+            </div>
 
-                        <span>
-                            {% if task.completed %}
-                                <s>{{ task.title }}</s> ✅
-                            {% else %}
-                                {{ task.title }} ❌
-                            {% endif %}
+            <div class="mb-2">
+                {{ form.description }}
+            </div>
+
+            <div class="row mb-2">
+                <div class="col">
+                    {{ form.priority }}
+                </div>
+                <div class="col">
+                    {{ form.category }}
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col">
+                    {{ form.task_date }}
+                </div>
+                <div class="col">
+                    {{ form.start_time }}
+                </div>
+                <div class="col">
+                    {{ form.end_time }}
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+                Add Task
+            </button>
+        </form>
+
+        <!-- TASK LIST -->
+        <ul class="list-group">
+            {% for task in tasks %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                    <div>
+                        <strong>{{ task.subject }}</strong><br>
+
+                        {% if task.description %}
+                            <small class="text-muted">{{ task.description }}</small><br>
+                        {% endif %}
+
+                        <span class="badge bg-secondary">
+                            {{ task.get_category_display }}
                         </span>
 
-                        <div class="btn-group btn-group-sm">
-                            <a href="{% url 'toggle_task' task.id %}"
-                            class="btn btn-warning">
-                                Toggle
-                            </a>
+                        <span class="badge
+                            {% if task.priority == 'H' %}bg-danger
+                            {% elif task.priority == 'M' %}bg-warning text-dark
+                            {% else %}bg-success
+                            {% endif %}
+                        ">
+                            {{ task.get_priority_display }}
+                        </span>
 
-                            <a href="{% url 'delete_task' task.id %}"
-                            class="btn btn-danger"
-                            onclick="return confirm('Delete this task?');">
-                                Delete
-                            </a>
-                        </div>
+                        <br>
+                        <small class="text-muted">
+                            {{ task.task_date }}
+                            {% if task.start_time %} | {{ task.start_time }}{% endif %}
+                            {% if task.end_time %} - {{ task.end_time }}{% endif %}
+                        </small>
+                    </div>
 
-                    </li>
-                {% empty %}
-                    <li class="list-group-item text-center text-muted">
-                        No tasks yet
-                    </li>
-                {% endfor %}
-            </ul>
+                    <div class="btn-group btn-group-sm">
+                        <a href="{% url 'toggle_task' task.id %}"
+                           class="btn btn-warning">
+                            {% if task.completed %}
+                                Incomplete
+                            {% else %}
+                                Complete
+                            {% endif %}
+                        </a>
 
-        </div>
+                        <a href="{% url 'delete_task' task.id %}"
+                           class="btn btn-danger"
+                           onclick="return confirm('Delete this task?');">
+                            Delete
+                        </a>
+                    </div>
+
+                </li>
+            {% empty %}
+                <li class="list-group-item text-center text-muted">
+                    No tasks added yet
+                </li>
+            {% endfor %}
+        </ul>
+
     </div>
+</div>
 
 </body>
-
 </html>
