@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My To-Do App</title>
+</head>
+<body>
+
+    <h1>My Tasks</h1>
+
+    <ul>
+        {% for task in tasks %}
+            <li>
+                {{ task.title }}
+                {% if task.completed %}
+                    ✅
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>No tasks available</li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
