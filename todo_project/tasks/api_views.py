@@ -67,15 +67,20 @@ from .models import Task
 from .serializers import TaskSerializer
 
 
-@api_view(["POST"])
+@api_view(["GET", "POST"])
 @permission_classes([IsAuthenticated])
-def api_create_task(request):
-    serializer = TaskSerializer(data=request.data)
+def api_tasks(request):
 
-    if serializer.is_valid():
-        serializer.save(user=request.user)  # 🔑 logged-in user
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    # 🔹 GET → list tasks
+    if request.method == "GET":
+        tasks = Task.objects.filter(user=request.user).order_by("-created_at")
+        serializer = TaskSerializer(tasks, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
+    # 🔹 POST → create task
+    if request.method == "POST":
+        serializer = TaskSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
