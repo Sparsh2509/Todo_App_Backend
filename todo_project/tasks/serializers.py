@@ -6,7 +6,7 @@ class TaskSerializer(serializers.ModelSerializer):
         model = Task
         fields = [
             "id",
-            "title",
+            "subject",
             "description",
             "category",
             "priority",

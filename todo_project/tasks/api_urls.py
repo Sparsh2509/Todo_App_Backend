@@ -5,4 +5,4 @@ urlpatterns = [
     path("signup/", api_signup),
     path("login/", api_login),
     path("tasks/", api_create_task)
-]
+]   
